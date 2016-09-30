@@ -1,6 +1,6 @@
 using UnityEngine;
 using System.Collections;
-
+//esse script deve ser colocado nas plataformas
 [RequireComponent (typeof (Rigidbody))]
 public class Flutuar : MonoBehaviour {
 	[SerializeField] [Range(1,100)] int velocidade;
