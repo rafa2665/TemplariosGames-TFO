@@ -1,51 +1,40 @@
 using UnityEngine;
 using System.Collections;
-
-public class Laser : MonoBehaviour
-{//Esse script deve ser colocado na arma
-    [SerializeField]
-    Color corLaser = Color.blue;
-    [SerializeField]
-    int distanciaDoLaser;
-    [SerializeField]
-    float larguraInicial, larguraFinal;
-    GameObject luzColisao;
-    Vector3 posicLuz;
+//esse script deve ser colocado nas plataformas
+[RequireComponent(typeof(Rigidbody))]
+public class Flutuar : MonoBehaviour
+{
+    [SerializeField][Range(1, 100)] int velocidade;
+    Rigidbody rb;
     // Use this for initialization
     void Start()
     {
-        luzColisao = new GameObject();//cria um obj vazio
-        luzColisao.AddComponent<Light>();//adiciona o componente luz
-        luzColisao.GetComponent<Light>().intensity = 8;//muda intensidade da luz
-        luzColisao.GetComponent<Light>().bounceIntensity = 8;//muda outra intensidade
-        luzColisao.GetComponent<Light>().range = larguraFinal * 2;//tamanho da luz
-        luzColisao.GetComponent<Light>().color = corLaser;//da cor a luz
-        posicLuz = new Vector3(0, 0, larguraFinal);
-        LineRenderer line = gameObject.AddComponent<LineRenderer>();//desenha linha para simular o laser
-        line.material = new Material(Shader.Find("Particles/Additive"));
-        line.SetColors(corLaser, corLaser);
-        line.SetWidth(larguraInicial, larguraFinal);
-        line.SetVertexCount(3);
+        rb = GetComponent<Rigidbody>();
     }
 
-    void Update()
+    // Update is called once per frame
+    void FixedUpdate()
     {
-        Vector3 reflexo;
-        Vector3 pontoFinalDoLaser = transform.position + transform.forward * distanciaDoLaser;
-        RaycastHit pontoDeColisao;
-        if (Physics.Raycast(transform.position, transform.forward, out pontoDeColisao,distanciaDoLaser)){//verificando se esta colidindo com algo
-            GetComponent<LineRenderer>().SetPosition(0, transform.position);
-            GetComponent<LineRenderer>().SetPosition(1, pontoDeColisao.point);
-            reflexo = Vector3.Reflect(pontoFinalDoLaser, pontoDeColisao.normal);
-            GetComponent<LineRenderer>().SetPosition(2,reflexo);
-            luzColisao.transform.position = pontoDeColisao.point - posicLuz;
+        Flutuando();
+        Girando();
+    }
+
+    void Flutuando()
+    {
+        if (transform.localPosition.y >= 3)
+        {//defina a altura maxima do objeto
+            print("3");
+            rb.AddRelativeForce(-Vector3.up * velocidade);
         }
-        else
-        {
-            GetComponent<LineRenderer>().SetPosition(0, transform.position);
-            GetComponent<LineRenderer>().SetPosition(1, pontoFinalDoLaser);
-            GetComponent<LineRenderer>().SetPosition(2, pontoFinalDoLaser);
-            luzColisao.transform.position = pontoFinalDoLaser;
+        else if (transform.localPosition.y <= -1)
+        {//defina a altura minima do objeto
+            print("-3");
+            rb.AddRelativeForce(Vector3.up * velocidade);
         }
+    }
+
+    void Girando()//gira o objeto
+    {
+        transform.localRotation = Quaternion.Euler(Vector3.up * Time.fixedTime);
     }
 }
