@@ -4,11 +4,15 @@ using System.Collections;
 [RequireComponent(typeof(Rigidbody))]
 public class Flutuar : MonoBehaviour
 {
-    [SerializeField][Range(1, 100)] int velocidade;
+    float alturaMin;
+    int forca = 20;
     Rigidbody rb;
     // Use this for initialization
     void Start()
     {
+        StartCoroutine(AlterarForca(5));
+        forca = Random.Range(15, 21);
+        alturaMin = transform.position.y - 1;
         rb = GetComponent<Rigidbody>();
     }
 
@@ -21,20 +25,19 @@ public class Flutuar : MonoBehaviour
 
     void Flutuando()
     {
-        if (transform.localPosition.y >= 3)
-        {//defina a altura maxima do objeto
-            print("3");
-            rb.AddRelativeForce(-Vector3.up * velocidade);
-        }
-        else if (transform.localPosition.y <= -1)
-        {//defina a altura minima do objeto
-            print("-3");
-            rb.AddRelativeForce(Vector3.up * velocidade);
-        }
+        if (transform.localPosition.y <= alturaMin)//defina a altura minima do objeto
+            rb.AddRelativeForce(0, 0, forca);
+    }
+
+    IEnumerator AlterarForca(int tempo)
+    {
+        yield return new WaitForSeconds(tempo);
+        forca = Random.Range(15, 21);
+        StartCoroutine(AlterarForca(5));
     }
 
     void Girando()//gira o objeto
     {
-        transform.localRotation = Quaternion.Euler(Vector3.up * Time.fixedTime);
+        transform.eulerAngles = new Vector3(transform.eulerAngles.x, 0.1f * forca, transform.eulerAngles.z);
     }
 }
