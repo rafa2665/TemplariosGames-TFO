@@ -17,7 +17,7 @@ public class TrocarVisao : MonoBehaviour {//esse script vai no player
 	}
 
     void ApertouMouse()
-    {
+    {//aqui voce pode usar boleanas para falar if(armaComMira == true) ai pode mudar a mira
         if (Input.GetMouseButtonDown(1))
         {
             if (cam.transform.position == posicaoT)
