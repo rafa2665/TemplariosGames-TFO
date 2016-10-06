@@ -1,15 +1,50 @@
-﻿using UnityEngine;
+using UnityEngine;
 using System.Collections;
 
 public class SlimeMorte : MonoBehaviour {
+    bool pode;
     [SerializeField]
     GameObject slime;
-
-    void OnTriggerEnter(Collider outro)
+    void Start()
+    {//massa da gosma = 1 e massa do player = 10, altere no rigidbody
+        pode = false;
+        print("pode = " + pode);
+        transform.localScale = new Vector3(transform.localScale.x / 2, transform.localScale.y / 2, transform.localScale.z / 2);
+        StartCoroutine("PodeDividir");
+    }
+    void OnCollisionEnter(Collision outro)
     {
-        GameObject novoSlime = slime;
-        Instantiate(novoSlime, transform.position, Quaternion.identity);
-        novoSlime.GetComponent<Transform>().localScale = (transform.localScale / 2);
-        Destroy(gameObject, 0.001f);
+        if (pode)
+        {
+            if (outro.gameObject.tag == "Player")
+            {
+                StartCoroutine("PodeDividir");
+                if (transform.localScale.x > 0.25 && transform.localScale.y > 0.25 && transform.localScale.z > 0.25)
+                {
+                    GameObject novoSlime1 = slime;
+                    GameObject novoSlime2 = slime;
+                    Instantiate(novoSlime2, new Vector3(transform.position.x + 2, transform.position.y + 1, transform.position.z + -2), Quaternion.identity);
+                    Instantiate(novoSlime1, new Vector3(transform.position.x + -2, transform.position.y + 1, transform.position.z + 2), Quaternion.identity);
+                    Destroy(gameObject, 0.01f);
+                }
+
+                else if (transform.localScale.x == 0.25 && transform.localScale.y == 0.25 && transform.localScale.z == 0.25)
+                {
+                    Debug.Log("Morreu!");
+                    Destroy(gameObject, 0.00001f);
+                }
+            }
+        }
+    }
+
+    void FixedUpdate()
+    {
+        print("pode = " + pode);
+    }
+
+    IEnumerator PodeDividir()
+    {
+        yield return new WaitForSeconds(1);
+        pode = true;
     }
 }
