@@ -5,15 +5,16 @@ using System.Collections;
 public class Flutuar : MonoBehaviour
 {
     float alturaMin;
-    int forca = 20;
+    int forca = 1;
     Rigidbody rb;
     // Use this for initialization
     void Start()
     {
         StartCoroutine(AlterarForca(5));
-        forca = Random.Range(15, 21);
+        //forca = Random.Range(15, 21);
         alturaMin = transform.position.y - 1;
         rb = GetComponent<Rigidbody>();
+        rb.mass = 0.03f;
     }
 
     // Update is called once per frame
@@ -26,18 +27,18 @@ public class Flutuar : MonoBehaviour
     void Flutuando()
     {
         if (transform.localPosition.y <= alturaMin)//defina a altura minima do objeto
-            rb.AddRelativeForce(0, 0, forca);
+            rb.AddRelativeForce(0, forca, 0);
     }
 
     IEnumerator AlterarForca(int tempo)
     {
         yield return new WaitForSeconds(tempo);
-        forca = Random.Range(15, 21);
+        //forca = Random.Range(15, 21);
         StartCoroutine(AlterarForca(5));
     }
 
     void Girando()//gira o objeto
     {
-        transform.eulerAngles = new Vector3(transform.eulerAngles.x, 0.1f * forca, transform.eulerAngles.z);
+        transform.eulerAngles += new Vector3(0, forca, 0);
     }
 }
