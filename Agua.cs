@@ -2,6 +2,7 @@
 using System.Collections;
 
 public class Agua : MonoBehaviour {
+	//O personagem perde 2 aneis de vida a cada 2 segundos dentro da agua acida.
 	GameObject hud;
 	void Start()
 	{
